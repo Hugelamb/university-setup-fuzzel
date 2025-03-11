@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 from courses import Courses
-from rofi import rofi
+from fuzzel import fuzzel
 
 lectures = Courses().current.lectures
 
 commands = ['last', 'prev-last', 'all', 'prev']
 options = ['Current lecture', 'Last two lectures', 'All lectures', 'Previous lectures']
 
-key, index, selected = rofi('Select view', options, [
-    '-lines', 4,
-    '-auto-select'
+key, index, selected = fuzzel('Select view', options, [
+    '--lines', 4,
 ])
 
 if index >= 0:

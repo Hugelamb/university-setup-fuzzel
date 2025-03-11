@@ -1,14 +1,13 @@
 import subprocess
 
-def rofi(prompt, options, rofi_args=[], fuzzy=True):
-    optionstr = '\n'.join(option.replace('\n', ' ') for option in options)
-    args = ['rofi', '-sort', '-no-levenshtein-sort']
+def fuzzel(prompt, options, fuzzel_args=[], fuzzy=True):
+    optionstr = '\n'.join(option.replace('\n',' ') for option in options)
+    args = ['fuzzel', '--no-sort']
     if fuzzy:
-        args += ['-matching', 'fuzzy']
-    args += ['-dmenu', '-p', prompt, '-format', 's', '-i']
-    args += rofi_args
+        args += ['--match-mode=fuzzy']
+    args += ['--dmenu', '--prompt', prompt, '-I']
+    args += fuzzel_args
     args = [str(arg) for arg in args]
-
 
     result = subprocess.run(args, input=optionstr, stdout=subprocess.PIPE, universal_newlines=True)
     returncode = result.returncode
@@ -28,3 +27,4 @@ def rofi(prompt, options, rofi_args=[], fuzzy=True):
         key = returncode - 9
 
     return key, index, selected
+

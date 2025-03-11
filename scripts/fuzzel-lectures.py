@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from courses import Courses
-from rofi import rofi
+from fuzzel import fuzzel
 from utils import generate_short_title, MAX_LEN
 
 lectures = Courses().current.lectures
@@ -18,11 +18,8 @@ options = [
     for lecture in sorted_lectures
 ]
 
-key, index, selected = rofi('Select lecture', options, [
-    '-lines', 5,
-    '-markup-rows',
-    '-kb-row-down', 'Down',
-    '-kb-custom-1', 'Ctrl+n'
+key, index, selected = fuzzel('Select lecture', options, [
+    '--lines', 5,
 ])
 
 if key == 0:

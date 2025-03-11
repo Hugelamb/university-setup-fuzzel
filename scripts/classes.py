@@ -13,6 +13,7 @@ from config import get_week, DATE_FORMAT, CURRENT_COURSE_ROOT
 # TODO
 locale.setlocale(locale.LC_TIME, "en_AU.utf8")
 
+## Create tut, lab, and sem classes
 
 def number2filename(n):
     return 'lec_{0:02d}.tex'.format(n)
