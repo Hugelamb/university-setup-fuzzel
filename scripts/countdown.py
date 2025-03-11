@@ -165,7 +165,7 @@ def main():
     # Call the Calendar API
     now = datetime.datetime.now(tz=TZ)
     ### Test code only, remove following line for deployment
-    now = now + datetime.timedelta(days=1)
+    # now = now + datetime.timedelta(days=1)
     morning = now.replace(hour=6, minute=0, microsecond=0)
     evening= now.replace(hour=23, minute=59, microsecond=0)
     # morning = tmr.replace(hour=6, minute=0, microsecond=0)
@@ -196,7 +196,6 @@ def main():
         ]
 
     events = get_events(USERCALENDARID)
-    print(events)
     # events = get_events('primary') + get_events('school-calendar@import.calendar.google.com')
     print('Done')
 
@@ -207,6 +206,7 @@ def main():
         print(text(events, now))
         if now < evening:
             scheduler.enter(DELAY, 1, print_message)
+            print("Done for today.")
 
     for event in events:
         # absolute entry, priority 1
