@@ -66,13 +66,14 @@ def summary(text):
     return truncate(re.sub(r'X[0-9A-Za-z]+', '', text).strip(), 50)
 
 def gray(text):
-    return '%{F#999999}' + text + '%{F-}'
-
+    # return "<span style=\"italic\">" + text + "</span>"
+    # return "<p> testing <strong> bold and <em> italics.</em></strong></p>"
+    return '<span style=\"italic\">'+ text + '</span>'
 def formatdd(begin, end):
     minutes = math.ceil((end - begin).seconds / 60)
 
     if minutes == 1:
-        return '1 minuut'
+        return '1 minute'
 
     if minutes < 60:
         return f'{minutes} min'
@@ -81,9 +82,9 @@ def formatdd(begin, end):
     rest_minutes = minutes % 60
 
     if hours > 5 or rest_minutes == 0:
-        return f'{hours} uur'
+        return f'{hours} hrs'
 
-    return '{}:{:02d} uur'.format(hours, rest_minutes)
+    return '{}:{:02d} hours'.format(hours, rest_minutes)
 
 def location(text):
     if not text:
@@ -97,13 +98,14 @@ def location(text):
 
 def text(events, now):
     current = next((e for e in events if e['start'] < now and  now < e['end']), None)
-
+    # print('current is: ',current)
     if not current:
         nxt = next((e for e in events if now <= e['start']), None)
+        # print('next is: ', nxt)
         if nxt:
             return join(
                 summary(nxt['summary']),
-                gray('over'),
+                gray('in'),
                 formatdd(now, nxt['start']),
                 location(nxt['location'])
             )
@@ -111,24 +113,25 @@ def text(events, now):
 
     nxt = next((e for e in events if e['start'] >= current['end']), None)
     if not nxt:
-        return join(gray('Einde over'), formatdd(now, current['end']) + '!')
+#        print('next is: ',nxt)
+        return join(gray('End at'), formatdd(now, current['end']) + '!')
 
     if current['end'] == nxt['start']:
         return join(
-            gray('Einde over'),
+            gray('End at'),
             formatdd(now, current['end']) + gray('.'),
-            gray('Hierna'),
+            gray('Next'),
             summary(nxt['summary']),
             location(nxt['location'])
         )
 
     return join(
-        gray('Einde over'),
+        gray('End at'),
         formatdd(now, current['end']) + gray('.'),
-        gray('Hierna'),
+        gray('Next'),
         summary(nxt['summary']),
         location(nxt['location']),
-        gray('na een pauze van'),
+        gray('after a break from'),
         formatdd(current['end'], nxt['start'])
     )
 
@@ -136,7 +139,7 @@ def text(events, now):
 def activate_course(event):
     course = next(
         (course for course in courses
-         if course.info['title'].lower() in event['summary'].lower()),
+         if course.info['classes'].lower() in event['descriptio'].lower()),
         None
     )
 
@@ -161,9 +164,12 @@ def main():
     print('Authenticated')
     # Call the Calendar API
     now = datetime.datetime.now(tz=TZ)
-
+    ### Test code only, remove following line for deployment
+    now = now + datetime.timedelta(days=1)
     morning = now.replace(hour=6, minute=0, microsecond=0)
     evening= now.replace(hour=23, minute=59, microsecond=0)
+    # morning = tmr.replace(hour=6, minute=0, microsecond=0)
+    # evening= tmr.replace(hour=23, minute=59, microsecond=0)
 
     print('Searching for events')
 
@@ -176,9 +182,11 @@ def main():
             orderBy='startTime'
         ).execute()
         events = events_result.get('items', [])
+#        print([event['start'] for event in events])
         return [
             {
                 'summary': event['summary'],
+                'description': event['description'], 
                 'location': event.get('location', None),
                 'start': parse(event['start']['dateTime']),
                 'end': parse(event['end']['dateTime'])
@@ -187,7 +195,8 @@ def main():
             if 'dateTime' in event['start']
         ]
 
-    events = get_events(userCalendarId)
+    events = get_events(USERCALENDARID)
+    print(events)
     # events = get_events('primary') + get_events('school-calendar@import.calendar.google.com')
     print('Done')
 
