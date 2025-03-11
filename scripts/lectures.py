@@ -46,7 +46,8 @@ class Lecture():
     def edit(self):
         subprocess.Popen([
             "foot",
-            f"\\nvim {str(self.file_path)}"
+            "nvim",
+            f"{str(self.file_path)}"
         ])
 
     def __str__(self):
