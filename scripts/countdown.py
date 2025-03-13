@@ -114,11 +114,11 @@ def text(events, now):
     nxt = next((e for e in events if e['start'] >= current['end']), None)
     if not nxt:
 #        print('next is: ',nxt)
-        return join(gray('End at'), formatdd(now, current['end']) + '!')
+        return join('End',gray('in'), formatdd(now, current['end']) + '!')
 
     if current['end'] == nxt['start']:
         return join(
-            gray('End at'),
+            gray('End in'),
             formatdd(now, current['end']) + gray('.'),
             gray('Next'),
             summary(nxt['summary']),
@@ -126,7 +126,7 @@ def text(events, now):
         )
 
     return join(
-        gray('End at'),
+        gray('End in'),
         formatdd(now, current['end']) + gray('.'),
         gray('Next'),
         summary(nxt['summary']),
@@ -137,16 +137,27 @@ def text(events, now):
 
 
 def activate_course(event):
-    course = next(
-        (course for course in courses
-            if course.info['title'].lower() in event['description'].lower()),
-            if course.info['classes'].lower() in event['description'].lower()),
-        None
-    )
-
+    # course = next(
+    #     (course for course in courses 
+    #         if course.info['title'].lower() in event['description'].lower()
+    #    ), n
+    #    None)
+    # now check if course has specific classes key, for courses that have distinct components under the same overall course name
+    #    if course.info.get('classes') is not None:
+    def generator(event):
+        for course in courses: 
+            if course.info.get('classes') is not None:
+                lesson = [lesson for lesson in course.info.get('classes')
+                    if lesson.lower() in event['description'].lower()]
+                yield course
+            elif course.info['title'].lower() in event['description'].lower():
+                yield course
+            else:
+                yield None
+    course = next(generator(event))
     if not course:
         return
-
+    # set active course if one was found
     courses.current = course
 
 
@@ -183,7 +194,7 @@ def main():
             orderBy='startTime'
         ).execute()
         events = events_result.get('items', [])
-#        print([event['start'] for event in events])
+        #        print([event['start'] for event in events])
         return [
             {
                 'summary': event['summary'],
@@ -198,8 +209,6 @@ def main():
 
     events = get_events(USERCALENDARID)
     # events = get_events('primary') + get_events('school-calendar@import.calendar.google.com')
-    print('Done')
-
     DELAY = 60
 
     def print_message():
@@ -207,7 +216,7 @@ def main():
         print(text(events, now))
         if now < evening:
             scheduler.enter(DELAY, 1, print_message)
-            print("Done for today.")
+    #            print("Done for today.")
 
     for event in events:
         # absolute entry, priority 1
