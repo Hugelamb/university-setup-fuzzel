@@ -139,7 +139,8 @@ def text(events, now):
 def activate_course(event):
     course = next(
         (course for course in courses
-         if course.info['classes'].lower() in event['descriptio'].lower()),
+            if course.info['title'].lower() in event['description'].lower()),
+            if course.info['classes'].lower() in event['description'].lower()),
         None
     )
 
