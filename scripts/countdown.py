@@ -63,10 +63,23 @@ def truncate(string, length):
     return string[:length - len(ellipsis)] + ellipsis
 
 def summary(text):
-    return truncate(re.sub(r'X[0-9A-Za-z]+', '', text).strip(), 50)
+    # summ = truncate(re.sub(r'X[0-9A-Za-z]+', '', text).strip(), 50) # Original truncation
+    summ = truncate(re.sub(r'([A-Z]{4})(?:[0-9]{4}) ([A-Z]{1}[a-z]{2})(?:[a-z]*) ?(\d?)(?:.*)', '\g<1> \g<2> \g<3>', text).strip(), 25) # Matches on 'ABCD1234 Class 1 of 2', where the count is optional, and returns ABCD1234 Cla 1
+    # The following applies to MATH2089 specifically, and should otherwise be removed/commented out 
+    m = re.search(r'\d+$', summ).group()
+    m = int(m)
+    
+    match m:
+        case 1:
+            summ = re.sub(r'([A-Z]{4})', 'NM', summ).strip()[:-2]
+
+        case 2:
+            summ = re.sub(r'([A-Z]{4})', 'ST', summ).strip()[:-2]
+    return summ
 
 def italics(text):
     return '<span style=\"italic\">'+ text + '</span>'
+
 def formatdd(begin, end):
     minutes = math.ceil((end - begin).seconds / 60)
 
@@ -111,7 +124,7 @@ def text(events, now):
     nxt = next((e for e in events if e['start'] >= current['end']), None)
     if not nxt:
 #        print('next is: ',nxt)
-        return join('End',italics('in'), formatdd(now, current['end']) + '!')
+        return join('Ends',italics('in'), formatdd(now, current['end']) + '!')
 
     if current['end'] == nxt['start']:
         return join(
@@ -176,11 +189,11 @@ def main():
     # Call the Calendar API
     now = datetime.datetime.now(tz=TZ)
     ### Test code only, remove following line for deployment
-    # now = now + datetime.timedelta(days=1)
+    tmr = now + datetime.timedelta(days=1)
     morning = now.replace(hour=6, minute=0, microsecond=0)
     evening= now.replace(hour=23, minute=59, microsecond=0)
-    # morning = tmr.replace(hour=6, minute=0, microsecond=0)
-    # evening= tmr.replace(hour=23, minute=59, microsecond=0)
+    morning = tmr.replace(hour=6, minute=0, microsecond=0)
+    evening= tmr.replace(hour=23, minute=59, microsecond=0)
 
     print('Searching for events')
 
