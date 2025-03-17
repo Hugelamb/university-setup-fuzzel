@@ -99,8 +99,7 @@ def text(events, now):
     # print('current is: ',current)
     if not current:
         nxt = next((e for e in events if now <= e['start']), None)
-        # print('next is: ', nxt)
-        if nxtEnd :
+        if nxt:
             return join(
                 summary(nxt['summary']),
                 italics('in'),
