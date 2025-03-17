@@ -65,9 +65,7 @@ def truncate(string, length):
 def summary(text):
     return truncate(re.sub(r'X[0-9A-Za-z]+', '', text).strip(), 50)
 
-def gray(text):
-    # return "<span style=\"italic\">" + text + "</span>"
-    # return "<p> testing <strong> bold and <em> italics.</em></strong></p>"
+def italics(text):
     return '<span style=\"italic\">'+ text + '</span>'
 def formatdd(begin, end):
     minutes = math.ceil((end - begin).seconds / 60)
@@ -94,7 +92,7 @@ def location(text):
     if not match:
         return ''
 
-    return f'{gray("in")} {match.group(1)}'
+    return f'{italics("in")} {match.group(1)}'
 
 def text(events, now):
     current = next((e for e in events if e['start'] < now and  now < e['end']), None)
@@ -102,10 +100,10 @@ def text(events, now):
     if not current:
         nxt = next((e for e in events if now <= e['start']), None)
         # print('next is: ', nxt)
-        if nxt:
+        if nxtEnd :
             return join(
                 summary(nxt['summary']),
-                gray('in'),
+                italics('in'),
                 formatdd(now, nxt['start']),
                 location(nxt['location'])
             )
@@ -114,24 +112,26 @@ def text(events, now):
     nxt = next((e for e in events if e['start'] >= current['end']), None)
     if not nxt:
 #        print('next is: ',nxt)
-        return join('End',gray('in'), formatdd(now, current['end']) + '!')
+        return join('End',italics('in'), formatdd(now, current['end']) + '!')
 
     if current['end'] == nxt['start']:
         return join(
-            gray('End in'),
-            formatdd(now, current['end']) + gray('.'),
-            gray('Next'),
+            'End',
+            italics('in'),
+            formatdd(now, current['end']) + italics('.'),
+            'Next',
             summary(nxt['summary']),
             location(nxt['location'])
         )
 
     return join(
-        gray('End in'),
-        formatdd(now, current['end']) + gray('.'),
-        gray('Next'),
+        'End',
+        italics('in'),
+        formatdd(now, current['end']) + italics('.'),
+        'Next',
         summary(nxt['summary']),
         location(nxt['location']),
-        gray('after a break from'),
+        italics('after'),
         formatdd(current['end'], nxt['start'])
     )
 
