@@ -119,7 +119,7 @@ def text(events, now):
                 formatdd(now, nxt['start']),
                 location(nxt['location'])
             )
-        return ''
+        return '・おわりました・'
 
     nxt = next((e for e in events if e['start'] >= current['end']), None)
     if not nxt:
@@ -189,11 +189,11 @@ def main():
     # Call the Calendar API
     now = datetime.datetime.now(tz=TZ)
     ### Test code only, remove following line for deployment
-    tmr = now + datetime.timedelta(days=1)
+    # tmr = now + datetime.timedelta(days=1)
     morning = now.replace(hour=6, minute=0, microsecond=0)
     evening= now.replace(hour=23, minute=59, microsecond=0)
-    morning = tmr.replace(hour=6, minute=0, microsecond=0)
-    evening= tmr.replace(hour=23, minute=59, microsecond=0)
+    # morning = tmr.replace(hour=6, minute=0, microsecond=0)
+    # evening= tmr.replace(hour=23, minute=59, microsecond=0)
 
     print('Searching for events')
 
