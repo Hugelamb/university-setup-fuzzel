@@ -66,16 +66,19 @@ def summary(text):
     # summ = truncate(re.sub(r'X[0-9A-Za-z]+', '', text).strip(), 50) # Original truncation
     summ = truncate(re.sub(r'([A-Z]{4})(?:[0-9]{4}) ([A-Z]{1}[a-z]{2})(?:[a-z]*) ?(\d?)(?:.*)', '\g<1> \g<2> \g<3>', text).strip(), 25) # Matches on 'ABCD1234 Class 1 of 2', where the count is optional, and returns ABCD1234 Cla 1
     # The following applies to MATH2089 specifically, and should otherwise be removed/commented out 
-    m = re.search(r'\d+$', summ).group()
-    m = int(m)
-    
-    match m:
-        case 1:
-            summ = re.sub(r'([A-Z]{4})', 'NM', summ).strip()[:-2]
+    search_res = re.search(r'\d+$', summ)
+    if search_res is not None:
+        m = int(search_res.group())
+        match m:
+            case 1:
+                summ = re.sub(r'([A-Z]{4})', 'NM', summ).strip()[:-2]
 
-        case 2:
-            summ = re.sub(r'([A-Z]{4})', 'ST', summ).strip()[:-2]
-    return summ
+            case 2:
+                summ = re.sub(r'([A-Z]{4})', 'ST', summ).strip()[:-2]
+        return summ
+    else: 
+        summ = re.sub(r'([A-Z]{4})', 'JA', summ).strip()
+        return summ
 
 def italics(text):
     return '<span style=\"italic\">'+ text + '</span>'
