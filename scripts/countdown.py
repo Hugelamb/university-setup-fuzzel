@@ -209,7 +209,8 @@ def main():
             orderBy='startTime'
         ).execute()
         events = events_result.get('items', [])
-        #        print([event['start'] for event in events])
+#        print(events)
+#        print([event['start'] for event in events])
         return [
             {
                 'summary': event['summary'],

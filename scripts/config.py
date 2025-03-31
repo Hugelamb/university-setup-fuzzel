@@ -10,7 +10,7 @@ def get_week(d=datetime.today()):
 # xxxxxxxxxxxxxxxxxxxxxxxxxg@group.calendar.google.com
 # example:
 # USERCALENDARID = 'xxxxxxxxxxxxxxxxxxxxxxxxxg@group.calendar.google.com'
-USERCALENDARID = 'g1j2kmmrskgos2h94pot0mch87i892h9@import.calendar.google.com'
+USERCALENDARID = 'bsb82qpgjado2juqfuvas8ihlvb51o54@import.calendar.google.com'
 # USERCALENDARID = 'primary' # default fallback option
 CURRENT_COURSE_SYMLINK = Path('~/notebook/current-course').expanduser()
 CURRENT_COURSE_ROOT = CURRENT_COURSE_SYMLINK.resolve()
