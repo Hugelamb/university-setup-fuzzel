@@ -1,265 +1,515 @@
-% Some basic packages
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{textcomp}
-\usepackage[dutch]{babel}
-\usepackage{url}
+%! TeX program = lualatex
+\usepackage{luatexja}
+\usepackage[match]{luatexja-fontspec}
+%\jfont{noto-jp}
+\usepackage[noto]{luatexja-preset}
+\usepackage[x11names,dvipsnames,table]{xcolor}
+% \usepackage[utf8]{inputenc}
+% \usepackage[]{url}
 \usepackage{graphicx}
-\usepackage{float}
+\graphicspath{ {./figures/} }
+\usepackage[]{float}
+\usepackage[]{verbatimbox}
+\usepackage[listings,breakable,skins,theorems]{tcolorbox}
+\usepackage[]{listings}
+%\usepackage[style=numeric]{biblatex}
+
+
+% select font family
+\renewcommand*\familydefault{\sfdefault}
+\usepackage{textcomp}
+
 \usepackage{booktabs}
 \usepackage{enumitem}
-
-\pdfminorversion=7
-
-% Don't indent paragraphs, leave some space between them
-\usepackage{parskip}
-
-% Hide page number when page is empty
+% Hide page number on empty pages
 \usepackage{emptypage}
-\usepackage{subcaption}
-\usepackage{multicol}
-\usepackage{xcolor}
+\usepackage[marginparwidth=75pt]{geometry}
 
-% Other font I sometimes use.
-% \usepackage{cmbright}
+\usepackage{subcaption} % arbitrary captions
+% tabular packages
+\usepackage{multicol} % merged columns in tabular environments
+\usepackage[]{multirow}
+\usepackage[]{tablefootnote}
 
-% Math stuff
+% tikz packages
+\usepackage[]{tikz}
+\usetikzlibrary{calc,matrix,shapes,positioning}
+
+\usepackage[normalem]{ulem}
+
+% Extraneous symbols
+\usepackage[misc]{ifsym}
+\usepackage{pifont} % access to dingbats style symbols
+
+% Maths related packages
+\usepackage[]{cancel} % allows for writing 
 \usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb}
-% Fancy script capitals
+\usepackage[]{derivative}
+
+% Script capitals 
 \usepackage{mathrsfs}
-\usepackage{cancel}
 % Bold math
 \usepackage{bm}
-% Some shortcuts
+%Some useful shortcuts for math environment Fonts
 \newcommand\N{\ensuremath{\mathbb{N}}}
 \newcommand\R{\ensuremath{\mathbb{R}}}
 \newcommand\Z{\ensuremath{\mathbb{Z}}}
 \renewcommand\O{\ensuremath{\emptyset}}
 \newcommand\Q{\ensuremath{\mathbb{Q}}}
 \newcommand\C{\ensuremath{\mathbb{C}}}
+\newcommand\Px{\ensuremath{\mathbb{P}}}
 
-% Easily typeset systems of equations (French package)
-\usepackage{systeme}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% USER DEFINED COLOURS %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\colorlet{b}{blue}
+\colorlet{B}{RoyalBlue}
+\colorlet{g}{green!50!black}
+\colorlet{r}{red!100}
+\colorlet{p}{purple}
+\colorlet{m}{Magenta}
+\colorlet{o}{orange}
+\colorlet{fb}{Firebrick3}
+\definecolor{t1}{HTML}{E53935}
+\definecolor{t2}{HTML}{C8A200}
+\definecolor{t3}{HTML}{43A047}
+\definecolor{t4}{HTML}{1E88E5}
+\definecolor{t5}{HTML}{8e24aa}
+\definecolor{t6}{HTML}{78909C}
+%\definecolor{tn}{HTML}{red!100}
 
-% Put x \to \infty below \lim
-\let\svlim\lim\def\lim{\svlim\limits}
 
-%Make implies and impliedby shorter
-\let\implies\Rightarrow
-\let\impliedby\Leftarrow
-\let\iff\Leftrightarrow
-\let\epsilon\varepsilon
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% USER DEFINED COMMANDS %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Add \contra symbol to denote contradiction
-\usepackage{stmaryrd} % for \lightning
-\newcommand\contra{\scalebox{1.5}{$\lightning$}}
+\newcommand{\norm}[1]{\left \lVert #1 \right \rVert}
+\newcommand{\arrowheadbullet}{\ding{228} }
 
-% \let\phi\varphi
-
-% Command for short corrections
-% Usage: 1+1=\correct{3}{2}
-
-\definecolor{correct}{HTML}{009900}
-\newcommand\correct[2]{\ensuremath{\:}{\color{red}{#1}}\ensuremath{\to }{\color{correct}{#2}}\ensuremath{\:}}
-\newcommand\green[1]{{\color{correct}{#1}}}
-
-% horizontal rule
-\newcommand\hr{
-    \noindent\rule[0.5ex]{\linewidth}{0.5pt}
+% Enum item custom series
+\newcommand*{\encircled}[1]{%
+  \footnotesize\protect\tikz[baseline=-3px]%
+  \protect\node[fill=gray!50, shape=circle, draw=none,%
+inner sep=1.2pt](n1){#1};
 }
-
-% hide parts
-\newcommand\hide[1]{}
-
-% si unitx
-\usepackage{siunitx}
-\sisetup{locale = FR}
-
+% Enum item custom series : Rounded Square with Capital Letters
+\newcommand*{\ensquared}[1]{%
+  \large\protect\tikz[baseline=-3px]\normalsize%
+  %\footnotesize\protect\tikz[baseline=-3px]%
+  \protect\node[fill=none, shape= rectangle, draw=black, rounded corners=0.1cm,%
+  inner sep=6pt](n1){\textbf{#1}};
+}
 % Environments
 \makeatother
-% For box around Definition, Theorem, \ldots
-\usepackage{mdframed}
-\mdfsetup{skipabove=1em,skipbelow=0em}
-\theoremstyle{definition}
-\newmdtheoremenv[nobreak=true]{definitie}{Definitie}
-\newmdtheoremenv[nobreak=true]{eigenschap}{Eigenschap}
-\newmdtheoremenv[nobreak=true]{gevolg}{Gevolg}
-\newmdtheoremenv[nobreak=true]{lemma}{Lemma}
-\newmdtheoremenv[nobreak=true]{propositie}{Propositie}
-\newmdtheoremenv[nobreak=true]{stelling}{Stelling}
-\newmdtheoremenv[nobreak=true]{wet}{Wet}
-\newmdtheoremenv[nobreak=true]{postulaat}{Postulaat}
-\newmdtheoremenv{conclusie}{Conclusie}
-\newmdtheoremenv{toemaatje}{Toemaatje}
-\newmdtheoremenv{vermoeden}{Vermoeden}
-\newtheorem*{herhaling}{Herhaling}
-\newtheorem*{intermezzo}{Intermezzo}
-\newtheorem*{notatie}{Notatie}
-\newtheorem*{observatie}{Observatie}
-\newtheorem*{oef}{Oefening}
-\newtheorem*{opmerking}{Opmerking}
-\newtheorem*{praktisch}{Praktisch}
-\newtheorem*{probleem}{Probleem}
-\newtheorem*{terminologie}{Terminologie}
-\newtheorem*{toepassing}{Toepassing}
-\newtheorem*{uovt}{UOVT}
-\newtheorem*{vb}{Voorbeeld}
-\newtheorem*{vraag}{Vraag}
 
-\newmdtheoremenv[nobreak=true]{definition}{Definition}
-\newtheorem*{eg}{Example}
-\newtheorem*{notation}{Notation}
-\newtheorem*{previouslyseen}{As previously seen}
-\newtheorem*{remark}{Remark}
-\newtheorem*{note}{Note}
-\newtheorem*{problem}{Problem}
-\newtheorem*{observe}{Observe}
-\newtheorem*{property}{Property}
-\newtheorem*{intuition}{Intuition}
-\newmdtheoremenv[nobreak=true]{prop}{Proposition}
-\newmdtheoremenv[nobreak=true]{theorem}{Theorem}
-\newmdtheoremenv[nobreak=true]{corollary}{Corollary}
+% framed envs
+% \usepackage{thmtools}
+%\usepackage[framemethod=TikZ]{mdframed}
+% \mdfsetup{skipabove=1em,skipbelow=0em}
 
-% End example and intermezzo environments with a small diamond (just like proof
-% environments end with a small square)
-\usepackage{etoolbox}
-\AtEndEnvironment{vb}{\null\hfill$\diamond$}%
-\AtEndEnvironment{intermezzo}{\null\hfill$\diamond$}%
-% \AtEndEnvironment{opmerking}{\null\hfill$\diamond$}%
+\pgfdeclarehorizontalshading{defbackground}{100bp}
+  {color(0bp)=(white);color(100bp)=(ForestGreen!45)}
 
-% Fix some spacing
-% http://tex.stackexchange.com/questions/22119/how-can-i-change-the-spacing-before-theorems-with-amsthm
-\makeatletter
-\def\thm@space@setup{%
-  \thm@preskip=\parskip \thm@postskip=0pt
+\pgfdeclarehorizontalshading{propbackground}{100bp}
+  {color(0bp)=(white);color(100bp)=(NavyBlue!45)}
+
+
+
+%-----------------------------
+% Listing Styles for Languages
+%-----------------------------
+% Python
+\definecolor{comment}{rgb}{0.58,0,0.82}
+\definecolor{linenumber}{rgb}{0.5,0.5,0.5}
+\definecolor{string}{RGB}{229,88,56}
+\lstdefinestyle{py3}{
+%  backgroundcolor=\color{ForestGreen!15!white},
+  commentstyle=\color{comment},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{linenumber},
+  stringstyle=\color{string},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  morecomment=[is]{\#\%}{\#:}
+  % numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=true,
+  tabsize=4,
+  language=Python
 }
-
-
-% Exercise 
-% Usage:
-% \oefening{5}
-% \suboefening{1}
-% \suboefening{2}
-% \suboefening{3}
-% gives
-% Oefening 5
-%   Oefening 5.1
-%   Oefening 5.2
-%   Oefening 5.3
-\newcommand{\oefening}[1]{%
-    \def\@oefening{#1}%
-    \subsection*{Oefening #1}
+\lstdefinestyle{general}{
+  backgroundcolor=\color{ForestGreen!15!white},
+  commentstyle=\color{comment},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{linenumber},
+  stringstyle=\color{string},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  % numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
 }
+% End environments 
 
-\newcommand{\suboefening}[1]{%
-    \subsubsection*{Oefening \@oefening.#1}
-}
+% Hide year part of lecture command
+% hide parts
+  \newcommand\hide[1]{}
 
-
-% \lecture starts a new lecture (les in dutch)
-%
-% Usage:
-% \lecture{1}{di 12 feb 2019 16:00}{Inleiding}
-%
-% This adds a section heading with the number / title of the lecture and a
-% margin paragraph with the date.
-
-% I use \dateparts here to hide the year (2019). This way, I can easily parse
-% the date of each lecture unambiguously while still having a human-friendly
-% short format printed to the pdf.
-
-\usepackage{xifthen}
-\def\testdateparts#1{\dateparts#1\relax}
-\def\dateparts#1 #2 #3 #4 #5\relax{
+  \makeatletter
+  \usepackage{xifthen}
+  \def\testdateparts#1{\dateparts#1\relax}
+  \def\dateparts#1 #2 #3 #4 #5\relax{
     \marginpar{\small\textsf{\mbox{#1 #2 #3 #5}}}
-}
-
-\def\@lecture{}%
-\newcommand{\lecture}[3]{
+  }
+  \def\@lecture{}%
+  \newcommand{\lecture}[3]{%
     \ifthenelse{\isempty{#3}}{%
-        \def\@lecture{Lecture #1}%
-    }{%
-        \def\@lecture{Lecture #1: #3}%
+      \def\@lecture{Lecture #1}%
+    } {%
+      \def\@lecture{Lecture #1: #3}%
     }%
     \subsection*{\@lecture}
-    \marginpar{\small\textsf{\mbox{#2}}}
+    \testdateparts{#2}
+   % \marginpar[\scriptsize\textsf{\mbox{#2}}]{\scriptsize\textsf{\mbox{#2}}}
+  }
+  \def\@tutorial{}%
+  \newcommand{\tutorial}[3]{%
+    \ifthenelse{\isempty{#3}}{%
+      \def\@tutorial{Tutorial #1}%
+    } {%
+      \def\@tutorial{Tutorial #1: #3}%
+    }%
+    \subsubsection*{\@tutorial}
+    \testdateparts{#2}
+   % \marginpar{\small\textsf{\mbox{#2}}}
+  }
+%  \def\@seminar{}%
+%  \newcommand{\seminar}[3]{%
+%    \ifthenelse{\isempty{#3}}{%
+%      \def\@seminar{Seminar #1}%
+%    } {%
+%      \def\@seminar{Seminar #1: #3}%
+%    }%
+%    \subsection*{\@seminar}
+%    \testdateparts{#2}
+%   % \marginpar{\small\textsf{\mbox{#2}}}
+%  }
+  \renewcommand{\chaptername}{Lesson} % customize chapter names
+  \def\@topic{}%
+  \newcommand{\topic}[1]{%
+    \def\@topic{#1}%
+
+    \chapter{\@topic}
+  }
+
+
+
+% \def\@date{}%
+%  \newcommand{\wdate}[3]{%
+%    \ifthenelse{\isempty{#3}}{%
+%      \def\@date{Date #1}%
+%    } {%
+%      \def\@date{Date #1: #3}%
+%    }%
+%    \subsection*{\@date}
+%    % \marginpar{\small\textsf{\mbox{#2}}}
+%    \testdateparts{#2}
+%  }
+% 
+% counter for exercises in a lecture
+  \newcounter{exercise}[chapter] % resets with each new chapter in document 
+  \renewcommand{\theexercise}{\thechapter.\arabic{exercise}}
+% % Other commands to set
+% 
+% \newcommand{\subexercise}[1]{%
+%   \subsubsection*{Exercise \@exercise.#1}
+% }
+% \def\@tutorial{}%
+% \newcommand{\tutorial}[3]{
+%   \ifthenelse{\isempty{#3}}{%
+%     \def\@tutorial{Tutorial #1}%
+%   }{%
+%     \def\@tutorial{Tutorial #1: #3}%
+%   }%
+%   \subsection*{\@tutorial}
+%   \testdateparts{#2}
+% }
+% 
+% \renewcommand{\theequation}{\thechapter.\arabic{equation}}
+% 
+% New command for double underlined text in math env
+  \newcommand{\ulinedbl}[1]{%
+    \underline{\underline{\textrm{ #1 }}} 
+  }
+
+
+  \renewcommand{\theequation}{\thechapter.\arabic{equation}}
+
+% Homework insertion
+  \pgfdeclarehorizontalshading{hwbackground}{100bp}
+  {color(0bp)=(RoyalPurple!25);color(100bp)=(black!5)}
+  %\newmdenv[
+  %linecolor=Gray!70!Black, linewidth=1pt,%
+  %roundcorner=3pt,%
+  %everyline=true,
+  %splittopskip=20pt,
+  %apptotikzsetting={\tikzset{mdfbackground/.append style ={%
+  %    shading=hwbackground},
+  %    mdfframetitlerule/.append style={%
+  %    linewidth=0pt},
+  %    mdfframetitlebackground/.append style={fill=none}
+  %}},
+  %frametitlerule=false
+  %]{homework}
+  %\newcommand{\hw}[2]{
+  %  \begin{homework}[frametitle=#1]
+  %    \ding{228} #2
+  %  \end{homework}
+  %}
+% Create color shorthand for background color
+\colorlet{codebg}{ForestGreen!15}
+% Further shadings
+
+% Tcolorbox alternative to mdenv
+
+\newcounter{homework}[chapter] % resets with each new chapter in document 
+\NewTColorBox[use counter=homework]{homework}{ O{}}{
+  enhanced jigsaw,
+  %frame hidden,
+  colframe = Gray!70!Black,
+  coltitle = RoyalPurple!5!white, fonttitle = \bfseries,
+  description font = \mdseries,
+  title = #1,
+  colframe=Purple4!75!black,
+  interior style = {left color={RoyalPurple!20!white}, right color={RoyalPurple!10}}
 }
+  \newtcolorbox[use counter=exercise, number within=chapter]{exbox}[1]{
+    enhanced jigsaw,
+    fonttitle=\Large\bfseries,coltitle=black,
+    colframe=RoyalPurple!15!white,title=Ex. ~\thetcbcounter: #1, breakable=true,
+    opacityback=0,opacitybacktitle=0,    
+    extras={frame empty, interior empty},
+  }
+  \NewTCBListing[auto counter, number within=chapter]{code}{O{}O{}}{
+    enhanced jigsaw,
+    breakable=true,
+    frame hidden,
+    title style={left color=RoyalPurple!25, right color={codebg!0}},
+    titlerule=0mm,
+    coltitle=black,
+    interior style={left color ={codebg},right color = {codebg}},
+    borderline={1.5pt}{.1pt}{white},
+    listing options={language=Python,style=py3,numbers=none},
+    listing only,
+    title=\textbf{Listing~\thetcbcounter},
+    after title={: #1},
+    #2
+  }
+  % 3 optional args: [general options][background color]{input listing file}[title] 
+  \NewTCBInputListing[use counter from=code, number within=chapter, list inside=code]{\codeInput}{O{}O{codebg} m O{} }{
+    enhanced jigsaw,
+    breakable=true,
+    frame hidden,
+    title style={left color=RoyalPurple!25, right color={#2!0}},
+    titlerule=0mm,
+    interior style={left color ={#2},right color = {#2}},
+    borderline={1.30pt}{.1pt}{white},
+    borderline east={1.5pt}{.1pt}{white},
+    listing file={#3},
+    listing only,
+    title=\textbf{Listing~\thetcbcounter},
+    coltitle=black,
+    after title={: #4},
+    #1  
+  }
+  % Replacement for mdenvtheorem environments using tcolorbox
+  % \NewTcbTheorem[⟨init options⟩]{⟨name⟩}{⟨display name⟩}{⟨options⟩}{⟨prefix⟩}
+  \NewTcbTheorem[auto counter,list inside=definitions]{definition}{Definition}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    coltitle = ForestGreen!100!black!75, fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={ForestGreen!10!white}, right color={ForestGreen!30}},
+    borderline west={2pt}{0pt}{ForestGreen!70} 
+  }{def}
+  % New property theorem
+  \NewTcbTheorem[auto counter, list inside=properties]{property}{Property}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    leftrule=2pt,
+    coltitle = NavyBlue,
+    fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={NavyBlue!10!white}, right color={NavyBlue!30}},
+    borderline west={2pt}{0pt}{NavyBlue!70} 
+  }{prop}
+  % New theorem env
+  \NewTcbTheorem[auto counter, list inside=theorems]{theorem}{Theorem}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    coltitle = RawSienna,
+    fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={RawSienna!10!white}, right color={RawSienna!30}},
+    borderline west={2pt}{0pt}{RawSienna!70} 
+  }{th}
+  \NewTcbTheorem[auto counter, list inside=grammar]{grammar}{Grammar}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    coltitle = orange,
+    fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={orange!10!white}, right color={orange!30}},
+    borderline west={2pt}{0pt}{orange!70} 
+  }{grm} 
+  \NewTcbTheorem[auto counter, list inside=notes]{note}{Note}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    coltitle = Honeydew4,
+    fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={Honeydew3!10!white}, right color={Honeydew3!30}},
+    borderline west={2pt}{0pt}{Honeydew3!70} 
+  }{not}
+  \NewTcbTheorem[auto counter, list inside=vocab]{vocab}{Vocab}{
+    enhanced jigsaw,
+    frame hidden,
+    theorem style=break,
+    rightrule=0mm, 
+    sharp corners,
+    leftrule=1pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    coltitle = DarkGoldenrod2,
+    fonttitle = \bfseries,
+    description font = \mdseries,
+    interior style={left color={DarkGoldenrod2!10!white}, right color={DarkGoldenrod2!30}},
+    borderline west={2pt}{0pt}{DarkGoldenrod2!70} 
+  }{voc}% Exercise env
+  \newcommand{\mdex}[2]{
+    \begin{exbox}{#1}
+      #2
+    \end{exbox}
+  }
+  \def\@exercise{}%
+  \newcommand{\exercise}[2]{%
+    \refstepcounter{exercise} % increment exercise number before printing it
+    \ifthenelse{\isempty{#2}}{
+      \def\@exercise{Exercise #1}%
+    }  {%
+      \def\@exercise{Exercise #1: #2}%  
+    }
+    \subsubsection*{\@exercise}
+    % \testdateparts{#2}
+  }
+
+  % Script dialogue formatting
+  \newenvironment{dialogue}[2][black] {%
+    \begin{center}
+      \textcolor{#1}{
+      \textbf{\Large#2}}\\\vskip1em
+      \begin{minipage}[b]{0.55\textwidth}
+        \raggedright
+      }{%
+      \end{minipage}
+    \end{center}
+  }
+  % Fancy headers and footers
+  \usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \fancyhead{} % clears all pre-existing fields
+  % name for open-book exam notes
+  % \fancyhead[LE,RO]{Hugh Lam}
+  % for twoside styling
+  % \fancyhead[RO,LE]{\@lecture}  % Right odd, Left even
+  % 
+  % \fancyfoot[RO,LE]{\thepage}   % Right odd, Left even
+  % \fancyfoot[RE,LO]{}           % Right even, Left odd
+  % \fancyfoot[C]{\leftmark}      % Center
+
+  \fancyhead[R]{\@lecture}  % Right odd, Left even
+  \fancyhead[L]{\thesection}
+  \fancyfoot[R]{\thepage}   % Right odd, Left even
+  \fancyfoot[C]{\leftmark}      % Center
 
 
+  \makeatother
 
-% These are the fancy headers
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-
-% LE: left even
-% RO: right odd
-% CE, CO: center even, center odd
-% My name for when I print my lecture notes to use for an open book exam.
-% \fancyhead[LE,RO]{Gilles Castel}
-
-\fancyhead[RO,LE]{\@lecture} % Right odd,  Left even
-\fancyhead[RE,LO]{}          % Right even, Left odd
-
-\fancyfoot[RO,LE]{\thepage}  % Right odd,  Left even
-\fancyfoot[RE,LO]{}          % Right even, Left odd
-\fancyfoot[C]{\leftmark}     % Center
-
-\makeatother
-
-
-
-
-% Todonotes and inline notes in fancy boxes
-\usepackage{todonotes}
-\usepackage{tcolorbox}
-
-% Make boxes breakable
-\tcbuselibrary{breakable}
-
-% Verbetering is correction in Dutch
-% Usage: 
-% \begin{verbetering}
-%     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-%     tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
-%     vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
-%     no sea takimata sanctus est Lorem ipsum dolor sit amet.
-% \end{verbetering}
-\newenvironment{verbetering}{\begin{tcolorbox}[
-    arc=0mm,
-    colback=white,
-    colframe=green!60!black,
-    title=Opmerking,
-    fonttitle=\sffamily,
-    breakable
-]}{\end{tcolorbox}}
-
-% Noot is note in Dutch. Same as 'verbetering' but color of box is different
-\newenvironment{noot}[1]{\begin{tcolorbox}[
-    arc=0mm,
-    colback=white,
-    colframe=white!60!black,
-    title=#1,
-    fonttitle=\sffamily,
-    breakable
-]}{\end{tcolorbox}}
-
-
-
-
-% Figure support as explained in my blog post.
-\usepackage{import}
-\usepackage{xifthen}
-\usepackage{pdfpages}
-\usepackage{transparent}
-\newcommand{\incfig}[1]{%
+  % Figure support as explained in my blog pos
+  \usepackage{import}
+  \usepackage{xifthen}
+  \usepackage{pdfpages}
+  \usepackage{transparent}
+  \newcommand{\incfig}[1]{%
     \def\svgwidth{\columnwidth}
     \import{./figures/}{#1.pdf_tex}
-}
+  }
+  \newcommand{\incvarfig}[2][\columnwidth]{
+    \def\svgwidth{#1}
+    \import{./figures/}{#2.pdf_tex}
+  }
+  
+  % alternative command for .eps files
+  
+  \newcommand{\inceps}[2][\columnwidth]{
+    \def\svgwidth{#1}
+    \import{./figures/}{#2.eps_tex}
+  }
+  
+  % Fix some stuff
+  % %http://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning
 
-% Fix some stuff
-% %http://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning
-\pdfsuppresswarningpagegroup=1
+  \author{Hugh Lam}
 
+  % referencing and linking capabilities (must be last package loaded)
 
-% My name
-\author{Gilles Castel}
+  \usepackage{hyperref}
+  %setup hyperref formatting
+  \hypersetup{
+    colorlinks=true,
+    linkcolor=DarkOrchid1,
+    filecolor=RoyalBlue,
+    urlcolor=Magenta
+  }% Some basic packages
+

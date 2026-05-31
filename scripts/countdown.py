@@ -233,7 +233,7 @@ def main():
         print(text(events, now))
         if now < evening:
             scheduler.enter(DELAY, 1, print_message)
-    #            print("Done for today.")
+            # print("〜おわりました〜")
 
     for event in events:
         # absolute entry, priority 1

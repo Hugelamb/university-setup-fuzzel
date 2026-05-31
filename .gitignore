@@ -1,5 +1,6 @@
 # don't upload credentials files 
 **/credentials.json
+**/config.py
 token.pickle
 **/__pycache__
 **/__pycache__/
