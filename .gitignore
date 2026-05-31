@@ -3,5 +3,6 @@
 token.pickle
 **/__pycache__
 **/__pycache__/
+**/__pycache__/**
 *.pyc
 scripts/__pycache__/

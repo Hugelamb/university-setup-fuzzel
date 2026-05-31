@@ -1,41 +1,33 @@
-#!/usr/bin/python3
-
+#!/bin/python3
 import os
 from datetime import datetime
 from pathlib import Path
-import locale
+import locale 
 import re
 import subprocess
 
-
 from config import get_week, DATE_FORMAT, CURRENT_COURSE_ROOT, TERM, EDITOR
 
-# TODO
 locale.setlocale(locale.LC_TIME, "en_AU.utf8")
 
-
 def number2filename(n):
-    return 'lec_{0:02d}.tex'.format(n)
+    return 'apdx_{0:02d}.tex'.format(n)
 
 def filename2number(s):
-    return int(str(s).replace('.tex', '').replace('lec_', ''))
+    return int(str(s).replace('.tex', '').replace('apdx_', ''))
 
-class Lecture():
+class Appendix():
     def __init__(self, file_path, course):
-        #print(file_path)
         with file_path.open() as f:
             for line in f:
-                lecture_match = re.search(r'lecture\{(.*?)\}\{(.*?)\}\{(.*)\}', line)
-                if lecture_match:
+                appendix_match = re.search(r'appendix\{(.*?)\}\{(.*?)\}\{(.*)\}', line)
+                if appendix_match:
                     break;
-
-        # number = int(lecture_match.group(1))
-        #print(f"{lecture_match.groups()}")
-        date_str = lecture_match.group(2)
+        date_str = appendix_match.group(2)
         date = datetime.strptime(date_str, DATE_FORMAT)
         week = get_week(date)
 
-        title = lecture_match.group(3)
+        title = appendix_match.group(3)
 
         self.file_path = file_path
         self.date = date
@@ -44,19 +36,18 @@ class Lecture():
         self.title = title
         self.course = course
 
+
     def edit(self):
         subprocess.Popen([
             TERM,
-            "-e",
             EDITOR,
             f"{str(self.file_path)}"
         ])
 
     def __str__(self):
-        return f'<Lecture {self.course.info["short"]} {self.number} "{self.title}">'
+        return f'<Appendix {self.course.info["short"]} {self.number} "{self.title}">'
 
-
-class Lectures(list):
+class Appendices(list):
     def __init__(self, course):
         self.course = course
         self.root = course.path
@@ -64,31 +55,31 @@ class Lectures(list):
         list.__init__(self, self.read_files())
 
     def read_files(self):
-        files = self.root.glob('lec_*.tex')
-        return sorted((Lecture(f, self.course) for f in files), key=lambda l: l.number)
+        files = self.root.glob('apdx_*.tex')
+        return sorted((Appendix(f, self.course) for f in files), key=lambda a: a.number)
 
-    def parse_lecture_spec(self, string):
+    def parse_appendix_spec(self, string):
         if len(self) == 0:
             return 0
 
         if string.isdigit():
             return int(string)
+        
         elif string == 'last':
             return self[-1].number
         elif string == 'prev':
             return self[-1].number - 1
 
     def parse_range_string(self, arg):
-        all_numbers = [lecture.number for lecture in self]
+        all_numbers = [appendix.number for appendix in self]
         if 'all' in arg:
             return all_numbers
-
         if '-' in arg:
-            start, end = [self.parse_lecture_spec(bit) for bit in arg.split('-')]
+            start, end = [self.parse_appendix_spec(bit) for bit in arg.split('-')]
             return list(set(all_numbers) & set(range(start, end + 1)))
-
-        return [self.parse_lecture_spec(arg)]
-
+        
+        return [self.parse_appendix_spec]
+           
     @staticmethod
     def get_header_footer(filepath):
         part = 0
@@ -97,7 +88,7 @@ class Lectures(list):
         with filepath.open() as f:
             for line in f:
                 # order of if-statements is important here!
-                if 'end lectures' in line:
+                if 'end appendices' in line:
                     part = 2
 
                 if part == 0:
@@ -105,42 +96,39 @@ class Lectures(list):
                 if part == 2:
                     footer += line
 
-                if 'start lectures' in line:
+                if 'start appendices' in line:
                     part = 1
         return (header, footer)
 
-    def update_lectures_in_master(self, r):
+    def update_appendices_in_master(self, r):
         header, footer = self.get_header_footer(self.master_file)
         body = ''.join(
             ' ' * 4 + r'\input{' + number2filename(number) + '}\n' for number in r)
-        self.master_file.write_text(header + body + footer)
+        self.master_file.write_text(header + body +footer)
 
-    def new_lecture(self):
+    def new_appendix(self):
         if len(self) != 0:
-            new_lecture_number = self[-1].number + 1
+            new_appendix_number = self[-1].number + 1
         else:
-            new_lecture_number = 1
+            new_appendix_number = 1
 
-        new_lecture_path = self.root / number2filename(new_lecture_number)
+        new_appendix_path = self.root / number2filename(new_appendix_number)
 
         today = datetime.today()
         date = today.strftime(DATE_FORMAT)
 
-        new_lecture_path.touch()
-        new_lecture_path.write_text(f'\\lecture{{{new_lecture_number}}}{{{date}}}{{}}\n')
-
-        if new_lecture_number == 1:
-            self.update_lectures_in_master([1])
+        new_appendix_path.touch()
+        new_appendix_path.write_text(f'\\appendix{{{new_appendix_number}}}{{{date}}}{{}}\n')
+        if new_appendix_number == 1:
+            self.update_appendices_in_master([1])
         else:
-            self.update_lectures_in_master([new_lecture_number - 1, new_lecture_number])
-
+            self.update_appendices_in_master([new_appendix_number - 1, new_appendix_number])
         self.read_files()
 
-
-        l = Lecture(new_lecture_path, self.course)
-
-        return l
-
+        a = Appendix(new_appendix_path, self.course)
+        
+        return a
+    
     def compile_master(self):
         result = subprocess.run(
             ['lualatex', '-f', '-interaction=nonstopmode', str(self.master_file)],
@@ -149,3 +137,7 @@ class Lectures(list):
             cwd=str(self.root)
         )
         return result.returncode
+
+if __name__ == "__main__":
+    for course in Courses():
+        incl_appendices(course)

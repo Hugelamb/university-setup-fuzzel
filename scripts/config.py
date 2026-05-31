@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -15,5 +16,8 @@ USERCALENDARID = 'bsb82qpgjado2juqfuvas8ihlvb51o54@import.calendar.google.com'
 CURRENT_COURSE_SYMLINK = Path('~/notebook/current-course').expanduser()
 CURRENT_COURSE_ROOT = CURRENT_COURSE_SYMLINK.resolve()
 CURRENT_COURSE_WATCH_FILE = Path('/tmp/current_course').resolve()
-ROOT = Path('~/notebook/term-1').expanduser()
+# ROOT = Path('~/notebook/learn-2025').expanduser()
+ROOT = Path('~/notebook/26T1').expanduser()
 DATE_FORMAT = '%a %d %b %Y %H:%M'
+TERM = os.environ.get("TERM", "alacritty")
+EDITOR = os.environ.get("EDITOR", "nvim")

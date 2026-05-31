@@ -3,6 +3,7 @@ from pathlib import Path
 import yaml
 
 from lectures import Lectures
+from appendices import Appendices
 from config import ROOT, CURRENT_COURSE_ROOT, CURRENT_COURSE_SYMLINK, CURRENT_COURSE_WATCH_FILE
 
 class Course():
@@ -11,12 +12,19 @@ class Course():
         self.name = path.stem
         self.info = yaml.safe_load((path / 'info.yaml').open())
         self._lectures = None
-
+        self._appendices = None
+            
     @property
     def lectures(self):
         if not self._lectures:
             self._lectures = Lectures(self)
         return self._lectures
+
+    @property
+    def appendices(self):
+        if not self._appendices:
+            self._appendices = Appendices(self)
+        return self._appendices
 
     def __eq__(self, other):
         if other == None:

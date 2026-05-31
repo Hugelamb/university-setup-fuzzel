@@ -1,6 +1,8 @@
 import subprocess
 
 def fuzzel(prompt, options, fuzzel_args=[], fuzzy=True):
+    # ensure key always has a value by defaulting it to 0 
+    key = 0
     optionstr = '\n'.join(option.replace('\n',' ') for option in options)
     args = ['fuzzel', '--no-sort']
     if fuzzy:

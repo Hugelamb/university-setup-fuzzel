@@ -6,6 +6,7 @@ from courses import Courses
 courses = Courses()
 current = courses.current
 
+
 try:
     current_index = courses.index(current)
 #    args = ['--search', ]
