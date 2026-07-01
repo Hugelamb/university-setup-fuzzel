@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/python3
 import os
 from datetime import datetime
 from pathlib import Path
@@ -11,6 +11,7 @@ from config import get_week, DATE_FORMAT, CURRENT_COURSE_ROOT, TERM, EDITOR
 locale.setlocale(locale.LC_TIME, "en_AU.utf8")
 
 def number2filename(n):
+    print('n in number2filename(n) is ',n)
     return 'apdx_{0:02d}.tex'.format(n)
 
 def filename2number(s):
@@ -20,18 +21,19 @@ class Appendix():
     def __init__(self, file_path, course):
         with file_path.open() as f:
             for line in f:
-                appendix_match = re.search(r'appendix\{(.*?)\}\{(.*?)\}\{(.*)\}', line)
+                # appendix_match = re.search(r'appendix\{(.*?)\}\{(.*?)\}\{(.*)\}', line)
+                appendix_match = re.search(r'chapter\{(.*?)\}\\label\{(.*?)\:(.*?)\}', line)
                 if appendix_match:
                     break;
-        date_str = appendix_match.group(2)
-        date = datetime.strptime(date_str, DATE_FORMAT)
-        week = get_week(date)
-
-        title = appendix_match.group(3)
+        #date_str = appendix_match.group(2)
+        #date = datetime.strptime(date_str, DATE_FORMAT)
+        #week = get_week(date)
+        print(appendix_match.group(1))
+        title = appendix_match.group(1)
 
         self.file_path = file_path
-        self.date = date
-        self.week = week
+        #self.date = date
+        #self.week = week
         self.number = filename2number(file_path.stem)
         self.title = title
         self.course = course
@@ -61,24 +63,19 @@ class Appendices(list):
     def parse_appendix_spec(self, string):
         if len(self) == 0:
             return 0
-
         if string.isdigit():
             return int(string)
-        
-        elif string == 'last':
-            return self[-1].number
-        elif string == 'prev':
-            return self[-1].number - 1
+        #elif string == 'last':
+        #    return self[-1].number
+        #elif string == 'prev':
+        #    return self[-1].number - 1
 
     def parse_range_string(self, arg):
         all_numbers = [appendix.number for appendix in self]
-        if 'all' in arg:
+        if 'appendices' in arg:
             return all_numbers
-        if '-' in arg:
-            start, end = [self.parse_appendix_spec(bit) for bit in arg.split('-')]
-            return list(set(all_numbers) & set(range(start, end + 1)))
-        
-        return [self.parse_appendix_spec]
+        return []
+        #return [self.parse_appendix_spec]
            
     @staticmethod
     def get_header_footer(filepath):
@@ -114,11 +111,9 @@ class Appendices(list):
 
         new_appendix_path = self.root / number2filename(new_appendix_number)
 
-        today = datetime.today()
-        date = today.strftime(DATE_FORMAT)
 
         new_appendix_path.touch()
-        new_appendix_path.write_text(f'\\appendix{{{new_appendix_number}}}{{{date}}}{{}}\n')
+        new_appendix_path.write_text(f'\\chapter{{}}\\label{{chp:}}\n')
         if new_appendix_number == 1:
             self.update_appendices_in_master([1])
         else:
