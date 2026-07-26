@@ -25,18 +25,18 @@ class Appendix():
                 appendix_match = re.search(r'chapter\{(.*?)\}\\label\{(.*?)\:(.*?)\}', line)
                 if appendix_match:
                     break;
-        #date_str = appendix_match.group(2)
-        #date = datetime.strptime(date_str, DATE_FORMAT)
-        #week = get_week(date)
-        print(appendix_match.group(1))
-        title = appendix_match.group(1)
+        # if appendix_match == None:
+        #     print("no appendices for this course")
+        # else:
+            print(appendix_match.group(1))
+            title = appendix_match.group(1)
 
-        self.file_path = file_path
+            self.file_path = file_path
         #self.date = date
         #self.week = week
-        self.number = filename2number(file_path.stem)
-        self.title = title
-        self.course = course
+            self.number = filename2number(file_path.stem)
+            self.title = title
+            self.course = course
 
 
     def edit(self):
